@@ -23,11 +23,7 @@ phases:
       - aws ecr get-login-password --region $AWS_REGION |
         docker login --username AWS --password-stdin $ECR_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com
       - echo Updating kubeconfig...
-      - aws eks update-kubeconfig \
-        --region $AWS_REGION \
-        --name $CLUSTER_NAME \
-        --role-arn arn:aws:iam::795974654805:role/service-role/codebuild-brain-tasks-codebuild-service-role
-      - kubectl get ns         
+      - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME --role-arn arn:aws:iam::795974654805:role/service-role/codebuild-bra        in-tasks-codebuild-service-role         
 
   build:
     commands:
@@ -40,7 +36,7 @@ phases:
       - echo Pushing image to ECR...
       - docker push $ECR_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
       - echo Deploying to EKS...
-      - kubectl apply -f k8s/deployment.yml
-      - kubectl apply -f k8s/service.yml
+      - kubectl apply -f k8s/
       - kubectl rollout status deployment/brain-tasks-deployment
+      - kubectl get ns
 
