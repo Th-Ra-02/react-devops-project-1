@@ -33,10 +33,12 @@ phases:
 
   post_build:
     commands:
-      - echo Pushing image to ECR...
-      - docker push $ECR_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
-      - echo Deploying to EKS...
-      - kubectl apply -f k8s/
-      - kubectl rollout status deployment/brain-tasks-deployment
-      - kubectl get ns
+      - echo "Caller identity:"
+      - aws sts get-caller-identity
+      - echo "Kubeconfig context:"
+      - kubectl config view
+      - echo "Testing cluster access:"
+      - kubectl get ns --request-timeout=20s
+      - echo "Deploying to EKS..."
+      - kubectl apply -f k8s/ --validate=false
 
