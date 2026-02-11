@@ -9,10 +9,7 @@ env:
     IMAGE_TAG: latest
 
 phases:
-  install:
-    runtime-versions:               
-      docker: 27
-      aws-cli: 2.15.0                 
+  install:               
     commands:
       - echo "Runtime versions installed"
   pre_build:
