@@ -11,7 +11,7 @@ data:
         - system:bootstrappers
         - system:nodes
 
-    - rolearn: arn:aws:iam::795974654805:role/service-role/codebuild-brain-tasks-codebuild-service-role
+    - rolearn:arn: aws:iam::795974654805:role/project-1
       username: codebuild
       groups:
         - system:masters
