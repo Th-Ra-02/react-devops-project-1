@@ -36,7 +36,7 @@ phases:
   post_build:
     commands:
       - echo "Connecting to EKS..."
-      - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME --role-arn arn:aws:iam::795974654805:role/project-1
+      - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
       - kubectl config current-context
       - kubectl get ns
       - kubectl set image deployment/brain-tasks-deployment app=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
