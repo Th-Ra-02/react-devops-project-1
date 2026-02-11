@@ -9,14 +9,20 @@ env:
     IMAGE_TAG: latest
 
 phases:
-  install:               
+  install:
     commands:
-      - echo "Runtime versions installed"
+      - echo "Installing kubectl..."
+      - curl -LO "https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl"
+      - curl -LO "https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl.sha256"
+      - echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/
+      - kubectl version --client
+
   pre_build:
     commands:
       - echo "Logging into ECR..."
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com
-      - echo "Auth test:"
       - aws sts get-caller-identity
 
   build:
@@ -24,18 +30,15 @@ phases:
       - echo "Building Docker image..."
       - docker build -t $ECR_REPO:$IMAGE_TAG .
       - docker tag $ECR_REPO:$IMAGE_TAG $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+      - echo "Pushing to ECR..."
+      - docker push $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
 
   post_build:
     commands:
-      - echo "Connecting to EKS"
+      - echo "Connecting to EKS..."
       - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME --role-arn arn:aws:iam::795974654805:role/project-1
       - kubectl config current-context
-      - echo "Testing cluster access"
       - kubectl get ns
-      - echo "Deploying to EKS"
-      - kubectl set image deployment/brain-tasks-deployment app=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG 
+      - kubectl set image deployment/brain-tasks-deployment app=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
       - kubectl rollout status deployment/brain-tasks-deployment --timeout=300s
-      - echo "LoadBalancer"
       - kubectl get svc brain-tasks-service
-      - echo "Deployment complete!"
-
