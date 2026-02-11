@@ -33,7 +33,7 @@ phases:
 
   post_build:
     commands:
-      - echo "Deploying to EKS..."
-      - kubectl apply -f k8s/ --validate=false
-      - kubectl get pods -n default 
+      - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME --role-arn arn:aws:iam::795974654805:role/project-1
+      - kubectl get ns
+      - kubectl set image deployment/brain-tasks-app app=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG 
 
