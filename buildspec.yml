@@ -39,6 +39,6 @@ phases:
       - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
       - kubectl config current-context
       - kubectl get ns
-      - kubectl set image deployment/brain-tasks-deployment app=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+      - kubectl set image deployment/brain-tasks-deployment brain-tasks-app=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
       - kubectl rollout status deployment/brain-tasks-deployment --timeout=300s
       - kubectl get svc brain-tasks-service
