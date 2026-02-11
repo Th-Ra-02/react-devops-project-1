@@ -33,12 +33,7 @@ phases:
 
   post_build:
     commands:
-      - echo "Caller identity:"
-      - aws sts get-caller-identity
-      - echo "Kubeconfig context:"
-      - kubectl config view
-      - echo "Testing cluster access:"
-      - kubectl get ns --request-timeout=20s
       - echo "Deploying to EKS..."
       - kubectl apply -f k8s/ --validate=false
+      - kubectl get pods -n default 
 
