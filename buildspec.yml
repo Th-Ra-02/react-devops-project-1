@@ -12,11 +12,9 @@ phases:
   install:
     runtime-versions:               
       docker: 27
-      aws-cli: 2.15.0
-      golang: 1.20                   
+      aws-cli: 2.15.0                 
     commands:
       - echo "Runtime versions installed"
-
   pre_build:
     commands:
       - echo "Logging into ECR..."
